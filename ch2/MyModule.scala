@@ -39,6 +39,8 @@ object MyModule {
     loop(0)
   }
 
+  def partial1[A,B,C](a: A, f: (A,B) => C): B => C = b => f(a, b)
+
   def main(args: Array[String]) : Unit =
     println(formatResult("absolute value", -42, abs))
 }
