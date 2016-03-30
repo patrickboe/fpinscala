@@ -41,4 +41,54 @@ object List {
     case Cons(x, Cons(y, Nil)) => List(x)
     case Cons(x, xs) => Cons(x, init(xs))
   }
+
+  //Ex 7
+  //no it cannot halt the recursion. it is subject to the evaluation rule of foldRight, which is to evaluate all the arguments and then apply the function to them. there is no allowance in foldRight for a short-circuiting value. a different implementation of foldRight which short-circuited on a third argument could do this.
+
+  //Ex 8
+  //this is the identity function. foldRight is a kind of superset of the List constructor.
+
+  //Ex 9
+  def foldRight[A,B](as: List[A], z: B)(f: (A,B)=>B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+
+  def length[A](as: List[A]): Int = foldRight(as,0)((_,n) => n + 1)
+
+  //Ex 10
+  @annotation.tailrec
+  def foldLeft[A,B](as: List[A], z: B)(f: (B,A)=>B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => foldLeft(xs, f(z,x))(f)
+    }
+
+  //Ex 11
+  def sum(xs: List[Int]): Int = List.foldLeft(xs,0)(_+_)
+
+  def product(xs: List[Int]): Int = List.foldLeft(xs,1)(_*_)
+
+  def len[A](as: List[A]): Int = foldLeft(as,0)((n,_) => n + 1)
+
+  //Ex 12
+  def reverse[A](as: List[A]): List[A] = foldLeft(as,Nil:List[A])((xs,x)=>Cons(x,xs))
+
+  //Ex 13
+  def flip[A,B,C](f: (A,B)=>C): (B,A)=>C = (x:B,y:A) => f(y,x)
+
+  def foldLeftR[A,B](as: List[A], z: B)(f: (B,A)=>B): B =
+    foldRight(reverse(as), z)(flip(f))
+
+  def foldRightL[A,B](as: List[A], z: B)(f: (A,B)=>B): B =
+    foldLeft(reverse(as), z)(flip(f))
+
+  //Ex 14
+  def append[A](xs: List[A], ys: List[A]): List[A] =
+    foldRight(xs,ys)(Cons(_,_))
+
+  //Ex 15
+  def flatten[A](xs: List[List[A]]) : List[A] =
+    foldRight(xs,Nil:List[A])(append)
 }
