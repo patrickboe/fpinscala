@@ -91,4 +91,48 @@ object List {
   //Ex 15
   def flatten[A](xs: List[List[A]]) : List[A] =
     foldRight(xs,Nil:List[A])(append)
+
+  //Ex 16
+  def incs(xs: List[Int]) : List[Int] =
+    foldRight(xs,Nil:List[Int])((a,b) => Cons(1+a,b))
+
+  //Ex 17
+  def dtoss(xs: List[Double]) : List[String] =
+    foldRight(xs,Nil:List[String])((a,b) => Cons(a.toString,b))
+
+  //Ex 18
+  def map[A,B](as: List[A])(f: A => B) : List[B] =
+    foldRight(as,Nil:List[B])((a,b) => Cons(f(a),b))
+
+  //Ex 19
+  def filter[A](as: List[A])(f: A => Boolean) : List[A] =
+    foldRight(as,Nil:List[A])((x,xs) => if (f(x)) Cons(x,xs) else xs)
+
+  val evens = filter(List(1,2,3,4,5,6))(_%2==0)
+
+  //Ex 20
+  def flatMap[A,B](as: List[A])(f: A => List[B]) : List[B] =
+    foldRight(as,Nil:List[B])((a,b) => append(f(a),b))
+
+  //Ex 21
+  def fmFilter[A](as: List[A])(f: A => Boolean) : List[A] =
+    flatMap(as)((x) => if (f(x)) List(x) else Nil)
+
+  //Ex 22
+  def addLists(ints1: List[Int], ints2: List[Int]) : List[Int] = ints1 match {
+    case Nil => Nil
+    case Cons(x,xs) => ints2 match {
+      case Nil => Nil
+      case Cons(y,ys) => Cons(x + y,addLists(xs,ys))
+    }
+  }
+
+  //Ex 23
+  def zipWith[A,B](as1: List[A], as2: List[A])(f: (A,A) => B) : List[B] = as1 match {
+    case Nil => Nil
+    case Cons(x,xs) => as2 match {
+      case Nil => Nil
+      case Cons(y,ys) => Cons(f(x,y),zipWith(xs,ys)(f))
+    }
+  }
 }
